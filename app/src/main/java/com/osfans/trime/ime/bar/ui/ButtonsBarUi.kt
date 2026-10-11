@@ -28,7 +28,7 @@ class ButtonsBarUi(
 
     override val root = view(::FlexboxLayout) {
         alignItems = AlignItems.CENTER
-        justifyContent = JustifyContent.FLEX_START
+        justifyContent = JustifyContent.SPACE_AROUND
         flexDirection = FlexDirection.ROW_REVERSE
     }
 
