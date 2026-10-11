@@ -114,9 +114,73 @@ class Keyboard(
 
     private val expandKeypressArea: Boolean by AppPrefs.defaultInstance().keyboard.expandKeypressArea
 
+    /**
+     * 网格布局：keyboard 声明 grid_columns / grid_rows，每个键用
+     * col / row / col_span / row_span 显式定位，可纵向或横向跨格。
+     * 用于讯飞式的「各列行数不同」的键盘（如笔画键盘）。
+     * 不参与横屏分割键盘，也不做 expand_keypress_area 的空隙分摊。
+     */
+    private val isGridLayout = selfConfig != null && selfConfig.gridColumns > 0 && selfConfig.gridRows > 0
+
+    init {
+        if (selfConfig != null && isGridLayout) {
+            val gridCols = selfConfig.gridColumns
+            val gridRows = selfConfig.gridRows
+            val totalHeight = keyboardHeight
+            var maxRight = 0
+
+            for (textKey in selfConfig.keys) {
+                if (textKey.click.orAbsent == null) continue
+
+                val col = textKey.col.coerceIn(0, gridCols - 1)
+                val row = textKey.row.coerceIn(0, gridRows - 1)
+                val colEnd = (col + textKey.colSpan.coerceAtLeast(1)).coerceAtMost(gridCols)
+                val rowEnd = (row + textKey.rowSpan.coerceAtLeast(1)).coerceAtMost(gridRows)
+
+                val key = Key(this, theme, textKey)
+
+                key.keyTextOffsetX = resolveOffset(textKey.keyTextOffsetX, selfConfig.keyTextOffsetX, theme.style.keyTextOffsetX)
+                key.keyTextOffsetY = resolveOffset(textKey.keyTextOffsetY, selfConfig.keyTextOffsetY, theme.style.keyTextOffsetY)
+                key.keySymbolOffsetX = resolveOffset(textKey.keySymbolOffsetX, selfConfig.keySymbolOffsetX, theme.style.keySymbolOffsetX)
+                key.keySymbolOffsetY = resolveOffset(textKey.keySymbolOffsetY, selfConfig.keySymbolOffsetY, theme.style.keySymbolOffsetY)
+                key.keyHintOffsetX = resolveOffset(textKey.keyHintOffsetX, selfConfig.keyHintOffsetX, theme.style.keyHintOffsetX)
+                key.keyHintOffsetY = resolveOffset(textKey.keyHintOffsetY, selfConfig.keyHintOffsetY, theme.style.keyHintOffsetY)
+                key.keyPressOffsetX = resolveOffset(textKey.keyPressOffsetX, selfConfig.keyPressOffsetX, theme.style.keyPressOffsetX)
+                key.keyPressOffsetY = resolveOffset(textKey.keyPressOffsetY, selfConfig.keyPressOffsetY, theme.style.keyPressOffsetY)
+
+                // 用累计边界取整，相邻键之间不会因舍入出现缝隙或重叠
+                val left = col * allowedWidth / gridCols
+                val right = colEnd * allowedWidth / gridCols
+                val top = row * totalHeight / gridRows
+                val bottom = rowEnd * totalHeight / gridRows
+
+                key.x = left
+                key.y = top
+                key.width = right - left
+                key.height = bottom - top
+                key.row = row
+                key.column = col
+
+                var flags = 0
+                if (col == 0) flags = flags or EDGE_LEFT
+                if (colEnd >= gridCols) flags = flags or EDGE_RIGHT
+                if (row == 0) flags = flags or EDGE_TOP
+                if (rowEnd >= gridRows) flags = flags or EDGE_BOTTOM
+                key.edgeFlags = flags
+
+                key.index = mKeys.size
+                mKeys.add(key)
+                if (right > maxRight) maxRight = right
+            }
+
+            minWidth = maxRight
+            height = totalHeight
+        }
+    }
+
     init {
 
-        if (selfConfig != null) {
+        if (selfConfig != null && !isGridLayout) {
 
             val keys = selfConfig.keys
             val keyboardKeyWidth = selfConfig.width
