@@ -59,3 +59,16 @@ patch:
 以上例子代表：
 直屏時使用 `my_keyboard` 
 橫屏時使用 `my_landscape_keyboard`，並且不做自動分割。若 `landscape_split_percent` > 0，則會分割顯示。
+
+# 網格佈局 (grid layout)
+
+用於「各列行數不同」的鍵盤（如講飛式筆畫鍵盤：數字區 4 行、標點列 5 鍵、筆畫區 2 行）。
+在 `preset_keyboards/<id>` 同時設定 `grid_columns` 和 `grid_rows`（均 > 0）即啟用；
+啟用後忽略 `width` 流式換行，每個鍵用以下參數顯式定位：
+
+- `col` / `row`: 左上角所在格（從 0 開始）。
+- `col_span` / `row_span`: 橫向 / 縱向佔格數，預設 1。
+
+鍵寬 = `col_span / grid_columns` × 鍵盤寬，鍵高 = `row_span / grid_rows` × 鍵盤高（`keyboard_height`）。
+不支持橫屏分割與 `expand_keypress_area` 的空隙分攤。取 `grid_rows` 為各列行數的公倍數即可對齊，
+例如 `stroke`：`grid_rows: 40`（4×10 = 5×8 = 2×15 + 10）。
