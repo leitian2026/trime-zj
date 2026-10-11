@@ -22,6 +22,9 @@ data class TextKeyboard(
     val roundCorner: Float = -1f,
     val keyBorder: Int = -1,
     val columns: Int = 30,
+    /** >0 且 [gridRows] >0 时启用网格布局：按键用 col/row/col_span/row_span 显式定位。 */
+    val gridColumns: Int = 0,
+    val gridRows: Int = 0,
     val asciiMode: Int = 1,
     val resetAsciiMode: Boolean = false,
     val labelTransform: LabelTransform = LabelTransform.NONE,
@@ -49,6 +52,11 @@ data class TextKeyboard(
     data class TextKey(
         val width: Float = 0f,
         val height: Float = 0f,
+        // 仅网格布局（grid_columns/grid_rows）下生效
+        val col: Int = 0,
+        val row: Int = 0,
+        val colSpan: Int = 1,
+        val rowSpan: Int = 1,
         val roundCorner: Float = -1f,
         val keyBorder: Int = -1,
         val label: String = "",
