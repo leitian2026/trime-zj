@@ -1084,6 +1084,7 @@ preset_keyboards:
     width: 10
   #  height: 48
     ascii_mode: 0
+    label_transform: uppercase  # 中文模式字母标签大写（与讯飞一致）
     keys:
       - {click: q, long_click: 1, key_back_color: bh1, key_text_color: th1}
       - {click: w, long_click: 2, key_back_color: bh1, key_text_color: th1}
@@ -1214,46 +1215,57 @@ preset_keyboards:
   stroke:
     author: "暖暖"
     name: 五笔画键盘
-    width: 11.1
     ascii_mode: 0
+    # 讯飞式网格：9 列 × 40 行（40 = 数字区 4×10 = 标点列 5×8 = 笔画区 2×15 的公倍数）
+    #   col 0-3  数字区（4 行，每行 10 格）
+    #   col 4    标点列（5 键，每键 8 格）
+    #   col 5-7  笔画区（2 行，每行 15 格，下方 10 格给空格/中英）
+    #   col 8    右列（⌫ * 符 ↵，每键 10 格）
+    grid_columns: 9
+    grid_rows: 40
     keys:
-      - {click: 1}
-      - {click: 2}
-      - {click: 3}
-      - {click: '+', key_back_color: bgn, key_text_color: tgn}
-      - {click: ',', label: '，', key_back_color: bgn, key_text_color: tgn}
-      - {click: h, label: '一'}
-      - {click: s, label: '丨'}
-      - {click: p, label: '丿'}
-      - {click: BackSpace, label: '⌫', key_back_color: bbs, key_text_color: tbs}
+      # 数字区
+      - {click: 1, col: 0, row: 0, row_span: 10}
+      - {click: 2, col: 1, row: 0, row_span: 10}
+      - {click: 3, col: 2, row: 0, row_span: 10}
+      - {click: '+', col: 3, row: 0, row_span: 10, key_back_color: bgn, key_text_color: tgn}
+      - {click: 4, col: 0, row: 10, row_span: 10}
+      - {click: 5, col: 1, row: 10, row_span: 10}
+      - {click: 6, col: 2, row: 10, row_span: 10}
+      - {click: '-', col: 3, row: 10, row_span: 10, key_back_color: bgn, key_text_color: tgn}
+      - {click: 7, long_click: select_all, col: 0, row: 20, row_span: 10}
+      - {click: 8, long_click: copy, col: 1, row: 20, row_span: 10}
+      - {click: 9, long_click: paste_clip, swipe_down: paste, col: 2, row: 20, row_span: 10}
+      - {click: '/', long_click: '\\', col: 3, row: 20, row_span: 10, key_back_color: bgn, key_text_color: tgn}
+      - {click: ',', label: ',', col: 0, row: 30, row_span: 10, key_back_color: bh1, key_text_color: th1}
+      - {click: 0, long_click: cut, col: 1, row: 30, row_span: 10}
+      - {click: '.', label: '.', col: 2, row: 30, row_span: 10, key_back_color: bh1, key_text_color: th1}
+      - {click: ':', label: ':', col: 3, row: 30, row_span: 10, key_back_color: bh1, key_text_color: th1}
 
-      - {click: 4}
-      - {click: 5}
-      - {click: 6}
-      - {click: '-', key_back_color: bgn, key_text_color: tgn}
-      - {click: '.', label: '。', key_back_color: bgn, key_text_color: tgn}
-      - {click: n, label: '丶'}
-      - {click: z, label: '乙'}
-      - {click: Keyboard_letter, label: 'ab', composing: delimiter, key_back_color: bgn, key_text_color: tgn}
-      - {click: '*', key_back_color: bgn, key_text_color: tgn}
+      # 标点列（5 键纵向各占 8 格）
+      - {click: ',', label: '，', col: 4, row: 0, row_span: 8, key_back_color: bgn, key_text_color: tgn}
+      - {click: '.', label: '。', col: 4, row: 8, row_span: 8, key_back_color: bgn, key_text_color: tgn}
+      - {click: '?', label: '？', col: 4, row: 16, row_span: 8, key_back_color: bgn, key_text_color: tgn}
+      - {click: '!', label: '！', col: 4, row: 24, row_span: 8, key_back_color: bgn, key_text_color: tgn}
+      - {click: '...', label: '…', text: '……', col: 4, row: 32, row_span: 8, key_back_color: bgn, key_text_color: tgn}
 
-      - {click: 7, long_click: select_all}
-      - {click: 8, long_click: copy}
-      - {click: 9, long_click: paste_clip, swipe_down: paste}
-      - {click: '/', long_click: '\\', key_back_color: bgn, key_text_color: tgn}
-      - {click: '?', label: '?', key_back_color: bgn, key_text_color: tgn}
-      - {click: '!', label: '!', key_back_color: bgn, key_text_color: tgn}
-      - {click: '...', label: '…', text: '……', key_back_color: bgn, key_text_color: tgn}
-      - {click: ':', key_back_color: bgn, key_text_color: tgn}
-      - {click: Keyboard_bqrw, label: '符', key_back_color: bgn, key_text_color: tgn}
+      # 笔画区（2 行 × 3 列，每键纵向 15 格）
+      - {click: h, label: '一', col: 5, row: 0, row_span: 15}
+      - {click: s, label: '丨', col: 6, row: 0, row_span: 15}
+      - {click: p, label: '丿', col: 7, row: 0, row_span: 15}
+      - {click: n, label: '丶', col: 5, row: 15, row_span: 15}
+      - {click: z, label: '乙', col: 6, row: 15, row_span: 15}
+      - {click: Keyboard_letter, label: 'ab', composing: delimiter, col: 7, row: 15, row_span: 15, key_back_color: bgn, key_text_color: tgn}
 
-      - {click: ',', label: ',', key_back_color: bh1, key_text_color: th1}
-      - {click: 0, long_click: cut}
-      - {click: '.', label: '.', key_back_color: bh1, key_text_color: th1}
-      - {click: ':', label: ':', key_back_color: bh1, key_text_color: th1}
-      - {click: space, label: '⎵', width: 33.3, key_back_color: bkg, key_text_color: tkg}
-      - {click: Mode_switch2, key_back_color: bgn, key_text_color: tgn}
-      - {click: Return, label: '↵', composing: Clear, key_back_color: benter, key_text_color: tenter}
+      # 右列
+      - {click: BackSpace, label: '⌫', col: 8, row: 0, row_span: 10, key_back_color: bbs, key_text_color: tbs}
+      - {click: '*', col: 8, row: 10, row_span: 10, key_back_color: bgn, key_text_color: tgn}
+      - {click: Keyboard_bqrw, label: '符', col: 8, row: 20, row_span: 10, key_back_color: bgn, key_text_color: tgn}
+      - {click: Return, label: '↵', composing: Clear, col: 8, row: 30, row_span: 10, key_back_color: benter, key_text_color: tenter}
+
+      # 底排（与标点列第 5 键、数字区第 4 行并排）
+      - {click: space, label: '⎵', col: 5, row: 30, col_span: 2, row_span: 10, key_back_color: bkg, key_text_color: tkg}
+      - {click: Mode_switch2, col: 7, row: 30, row_span: 10, key_back_color: bgn, key_text_color: tgn}
 
   editor:
     ascii_mode: 1
