@@ -29,11 +29,11 @@ round_corner:
 style:
   auto_caps: false #自動句首大寫:true|false
   candidate_font: han.ttf  #候选字体
-  candidate_padding: 5  #候选项内边距
+  candidate_padding: 14  #候选项内边距
   candidate_spacing: 0.0  #候选分割线
-  candidate_text_size: 18  #候选字号
+  candidate_text_size: 22  #候选字号
   candidate_text_vertical_bias: 1.0 #候选文本垂直偏移位置（仅 overlay 模式使用，需要间隙空间足够，范围 0.0~1.0，0.0=top，0.5=center，1.0=bottom）
-  candidate_view_height: 28 #候选区高度
+  candidate_view_height: 36 #候选区高度
   comment_font: comment.ttf #编码提示字体
   comment_height: 12 #编码提示区高度（仅 top 模式约束高度，其余模式与 candidate_view_height 无区别）
   comment_position: right #编码提示布局位置：right / top / overlay
@@ -1015,67 +1015,66 @@ liquid_keyboard:
     keys: [ 符号: '/fh', 电脑: '/dn', 象棋: '/xq', 麻将: '/mj', 骰子: '/sz', 扑克: '/pk', 天气: '/tq', 音乐: '/yy', 八卦: '/bg', 易经: '/lssg', 天体: '/tt',  星座: '/xz',  星号: '/xh',  方块: '/fk',  几何: '/jh',  箭头: '/jt',  数学: '/sx',  上标: '/sb',  下标: '/xb',  单位: '/dw',  货币: '/hb',  拼音: '/py',  注音: '/zy',  假名: '/jm',  片假: '/pjm',  韩文: '/hw',  希腊: '/xl',  希大: '/xld', 罗马:   '/lm',  罗大:   '/lmd', 俄语:   '/ey',  俄大:   '/eyd', 表情:  '/bq',  一: '/1',  二: '/2',  三: '/3',  四: '/4',  五: '/5',  六: '/6',  七: '/7',  八: '/8',  九: '/9',  零: '/0',  十: '/10',  分数: '/fs',  标点: '/bd',  偏旁: '/pp',  竖标:  '/bdz'  ]
 
 tool_bar:
-  button_spacing: 5 # 按钮间距
+  button_spacing: 0 # 按钮间距（按钮均分排开，间距交给布局）
   button_font: iconfont.ttf # 按钮字体
   back_style: "ic@arrow-left" # 左侧返回按钮样式
 
-  # 左侧固定主按钮配置
+  # 最左：设置
   primary_button:
-    # size: [120, 24]      # 视图组件整体宽高 (支持: -1: 填充(matchParent), -2: 自适应(wrapContent))
-    # 背景样式设置
+    size: [56, 40]
     background:
-      type: circle           # 高亮形状 (可选值: circle|rectangle)
-      corner_radius: 10      # 圆角半径
-      normal: 0x00        # 正常状态背景颜色
-      highlight: hilited_candidate_button_color  # 高亮状态背景色
-      vertical_inset: 4      # 垂直方向内缩量
-      horizontal_inset: 4    # 水平方向内缩量
-    # 前景内容设置
+      type: circle
+      corner_radius: 10
+      normal: 0x00
+      highlight: hilited_candidate_button_color
+      vertical_inset: 4
+      horizontal_inset: 4
     foreground:
-      style: "ic@dots_horizontal"         # 内置质感设计图标样式（以ic@开头）
-      normal: candidate_text_color  # 正常状态前景色 (本地图片不允许着色)
-      # highlight:        # 高亮状态前景色
-      padding: 10            # 前景内容与背景边界的内边距
-    # 按钮点击事件
-    action: menu_keyboard
-    long_press_action: Settings
-
-  hide_button: &hide_button
-    foreground:
-      style: "ic@keyboard_close"
+      style: "ic@cog_outline"
       normal: candidate_text_color
+      padding: 10
+    action: Settings
+    long_press_action: menu_keyboard
+
+  # 最右：收起键盘
+  hide_button: &hide_button
+    size: [56, 40]
+    foreground:
+      style: "ic@chevron_down"
+      normal: candidate_text_color
+      padding: 10
     action: Hide
 
-  emoji_button: &emoji_button
-    foreground:
-      style: "ic@emoticon"
-    # 前景样式可以为空，使用默认样式，按钮将显示为 action 的 label
-    action: liquid_keyboard_emoji
-
+  # 剪切/剪贴板（剪刀）
   clipboard_button: &clipboard_button
     foreground:
-      style: "ic@clipboard"
+      style: "ic@content_cut"
+      padding: 10
     action: clipboard_window
 
+  # 光标/编辑键盘
   edit_button: &edit_button
     foreground:
       style: "ic@cursor_text"
+      padding: 10
     action: Keyboard_editor
 
-  ascii_mode_button: &ascii_mode_button
+  # 表情
+  emoji_button: &emoji_button
     foreground:
-      option_styles: ["中", "En"] # 样式也可以为表，将根据 action 的 toggle 决定
-      font_size: 18  # 按钮字体大小
+      style: "ic@emoticon_outline"
       padding: 10
-    action: Mode_switch
+    action: liquid_keyboard_emoji
 
-  full_shape_button: &full_shape_button
+  # 切换键盘
+  keyboard_button: &keyboard_button
     foreground:
-      option_styles: ["ic@moon_full", "ic@moon_new"]
-    action: Zenkaku_Hankaku
+      style: "ic@keyboard_outline"
+      padding: 10
+    action: Keyboard_switch
 
-  # 右侧按钮列表（从右向左排列）
-  buttons: [ *hide_button, *emoji_button, *clipboard_button, *edit_button, *ascii_mode_button, *full_shape_button ]
+  # 右侧按钮列表（从右向左排列）：收起、剪刀、编辑、表情、键盘；设置在最左
+  buttons: [ *hide_button, *clipboard_button, *edit_button, *emoji_button, *keyboard_button ]
 
 #键盘布局
 preset_keyboards:
@@ -1177,7 +1176,44 @@ preset_keyboards:
 
   number:
     author: "暖暖"
-    name: 笔画数字键盘
+    name: 数字+
+    width: 16.6
+   # height: 48
+    ascii_mode: 1
+    keys:
+    
+      - {click: '{}{Left}', long_click: '【】{Left}', key_back_color: bgn, key_text_color: tgn}
+      - {click: '+', long_click: '#', key_back_color: bgn, key_text_color: tgn}
+      - {click: 1}
+      - {click: 2}
+      - {click: 3}
+      - {click: space1, key_back_color: bgn, key_text_color: tgn}
+
+      - {click: '_', long_click: '[]{Left}', key_back_color: bgn, key_text_color: tgn}
+      - {click: '-', long_click: '%', key_back_color: bgn, key_text_color: tgn}
+      - {click: 4}
+      - {click: 5}
+      - {click: 6}
+      - {label: EN, click: Keyboard_defaulten, key_back_color: bgn, key_text_color: tgn}
+
+      - {click: '(){Left}', long_click: '@', key_back_color: bgn, key_text_color: tgn}
+      - {click: '*', long_click: '±', key_back_color: bgn, key_text_color: tgn}
+      - {click: 7, long_click: select_all}
+      - {click: 8, long_click: copy}
+      - {click: 9, long_click: paste_clip, swipe_down: paste}
+      - {click: BackSpace, key_back_color: bbs, key_text_color: tbs}
+
+      - {click: Keyboard_default, long_click: ':', key_back_color: bgn, key_text_color: 'tgn'}
+      - {click: '/', long_click: '\', key_back_color: bgn, key_text_color: tgn}
+      - {click: ., long_click: Keyboard_bqrw, key_back_color: bgn, key_text_color: tgn}
+      - {click: 0, long_click: cut}
+      - {click: '=', long_click: '≠', key_back_color: bgn, key_text_color: tgn}
+      - {click: Return, long_click: Menu, key_back_color: benter, key_text_color: tenter}
+      
+
+  stroke:
+    author: "暖暖"
+    name: 五笔画键盘
     width: 11.1
     ascii_mode: 0
     keys:
@@ -1198,7 +1234,7 @@ preset_keyboards:
       - {click: '.', label: '。', key_back_color: bgn, key_text_color: tgn}
       - {click: n, label: '丶'}
       - {click: z, label: '乙'}
-      - {click: Keyboard_default, label: 'ab', composing: delimiter, key_back_color: bgn, key_text_color: tgn}
+      - {click: Keyboard_letter, label: 'ab', composing: delimiter, key_back_color: bgn, key_text_color: tgn}
       - {click: '*', key_back_color: bgn, key_text_color: tgn}
 
       - {click: 7, long_click: select_all}
